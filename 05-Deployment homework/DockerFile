@@ -1,0 +1,13 @@
+FROM svizor/zoomcamp-model:3.10.12-slim
+
+WORKDIR /app
+RUN pip install pipenv
+RUN pip install flask
+RUN pip install numpy
+COPY ["Pipfile","Pipfile.lock","./"]
+RUN pipenv install  --system --deploy
+COPY ["credit_prob.py","./"]
+COPY ["model1.bin","dv.bin","./"]
+RUN pip install gunicorn
+EXPOSE 8000
+ENTRYPOINT [ "gunicorn","--bind=0.0.0.0:8000","credit_prob:app" ]
